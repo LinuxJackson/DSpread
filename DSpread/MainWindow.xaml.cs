@@ -421,6 +421,10 @@ namespace DSpread
                 lblATK.Content = "ATK: ";
                 lblArmor.Content = "Armor: ";
                 lblPH.Content = "[--/--]";
+                lblAttack.Content = "";
+                lblAvoid.Content = "";
+                lblArmorEX.Content = "";
+                lblCrit.Content = "";
                 return;
             }
             gdControl.IsEnabled = true;
@@ -452,35 +456,35 @@ namespace DSpread
                     {
                         maxCDATK = ds.ObjectProperties.AttacksCD;
                         bdrAttack.IsEnabled = false;
-                        lblAttack.Content = ds.ObjectProperties.AttacksCD;
+                        lblAttack.Content = maxCDATK;
                         lblAttack.FontSize = 20;
                         lblAttack.HorizontalAlignment = HorizontalAlignment.Center;
                         lblAttack.VerticalAlignment = VerticalAlignment.Center;
                         lblAttack.Foreground = new SolidColorBrush(Colors.Pink);
                     }
                 }
-                if (!ds.ObjectProperties.AvoidingAttackAvailable || ds.ObjectProperties.AvoidingAttack == true)
+                if (!ds.ObjectProperties.AvoidingAttackAvailable)
                 {
                     CDAvoid = false;
                     if (ds.ObjectProperties.AvoidAttackCD > maxCDAvoid)
                     {
                         maxCDAvoid = ds.ObjectProperties.AvoidAttackCD;
                         bdrAvoid.IsEnabled = false;
-                        lblAvoid.Content = ds.ObjectProperties.AttacksCD;
+                        lblAvoid.Content = maxCDAvoid;
                         lblAvoid.FontSize = 20;
                         lblAvoid.HorizontalAlignment = HorizontalAlignment.Center;
                         lblAvoid.VerticalAlignment = VerticalAlignment.Center;
                         lblAvoid.Foreground = new SolidColorBrush(Colors.Pink);
                     }
                 }
-                if (!ds.ObjectProperties.ExtraArmorAvailable || ds.ObjectProperties.AvoidingAttack == true)
+                if (!ds.ObjectProperties.ExtraArmorAvailable)
                 {
                     CDArmor = false;
                     if (ds.ObjectProperties.ExtraArmorCD > maxCDArmor)
                     {
                         maxCDArmor = ds.ObjectProperties.ExtraArmorCD;
                         bdrExtraArmor.IsEnabled = false;
-                        lblArmorEX.Content = ds.ObjectProperties.AttacksCD;
+                        lblArmorEX.Content = maxCDArmor;
                         lblArmorEX.FontSize = 20;
                         lblArmorEX.HorizontalAlignment = HorizontalAlignment.Center;
                         lblArmorEX.VerticalAlignment = VerticalAlignment.Center;
@@ -494,7 +498,7 @@ namespace DSpread
                     {
                         maxCDCrit = ds.ObjectProperties.ViolentAttacksCD;
                         bdrViolatedAttack.IsEnabled = false;
-                        lblCrit.Content = ds.ObjectProperties.ViolentAttacksCD;
+                        lblCrit.Content = maxCDCrit;
                         lblCrit.FontSize = 20;
                         lblCrit.HorizontalAlignment = HorizontalAlignment.Center;
                         lblCrit.VerticalAlignment = VerticalAlignment.Center;
@@ -590,6 +594,11 @@ namespace DSpread
                 return;
             }
             Attack.AttackTarget(GameData.arrSelectedUserObjects, GameData.arrSelectedEnemiesObjects, TeamSign.Teams.User);
+        }
+
+        private void bdrAvoid_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            AvoidAttack.Avoid(GameData.arrSelectedUserObjects);
         }
     }
 }

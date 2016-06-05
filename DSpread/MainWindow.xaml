@@ -16,7 +16,7 @@
             <Border x:Name="bdrAttack" MouseDown="bdrAttack_MouseDown" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave"  BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="55" Margin="24,48,0,0" VerticalAlignment="Top" Width="55">
                 <Label x:Name="lblAttack" Content="Attack" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0" FontSize="10"/>
             </Border>
-            <Border x:Name="bdrAvoid" BorderBrush="Black" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave" BorderThickness="1" HorizontalAlignment="Left" Height="55" Margin="84,48,0,0" VerticalAlignment="Top" Width="55">
+            <Border x:Name="bdrAvoid" MouseDown="bdrAvoid_MouseDown" BorderBrush="Black" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave" BorderThickness="1" HorizontalAlignment="Left" Height="55" Margin="84,48,0,0" VerticalAlignment="Top" Width="55">
                 <Label x:Name="lblAvoid" Content="Avoid" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0" FontSize="10"/>
             </Border>
             <Border x:Name="bdrExtraArmor" BorderBrush="Black" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave" BorderThickness="1" HorizontalAlignment="Left" Height="55" Margin="144,48,0,0" VerticalAlignment="Top" Width="55">

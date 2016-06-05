@@ -154,7 +154,7 @@ namespace libObjProperties
         DispatcherTimer tmrPHRefresh;
 
         //存活状态
-        private bool isAlive;
+        private bool isAlive = true;
 
         public bool IsAlive
         {

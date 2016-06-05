@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AvoidAttack.cs" />
     <Compile Include="CreateNewObject.cs" />
     <Compile Include="Attack.cs" />
     <Compile Include="OverrideSet.cs" />

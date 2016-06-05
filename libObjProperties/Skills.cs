@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using System.Windows.Media;
 
 namespace libObjProperties
 {
@@ -12,9 +13,9 @@ namespace libObjProperties
         public Skills()
         {
             AttacksAvailable = true;
-            ExtraArmorAvailable = false;
-            AvoidingAttackAvailable = false;
-            ViolentAttacksAvailable = false;
+            ExtraArmorAvailable = true;
+            AvoidingAttackAvailable = true;
+            ViolentAttacksAvailable = true;
 
             Atk = DefaultParameters.StartingATK;
             Armor = DefaultParameters.StartingArmor;
@@ -72,7 +73,7 @@ namespace libObjProperties
                 if (extraArmor)
                 {
                     //开启护甲，开始倒计时
-                    extraArmorAvailable = false;
+                    ExtraArmorAvailable = false;
                     preArmor = Armor;
                     Armor = Armor * 3;
                     extraArmorTime = (int)(20 + 0.1 * Armor);
@@ -198,10 +199,12 @@ namespace libObjProperties
                 {
                     //闪避启动，开始倒计时
                     avoidingAttackTime = 30;
+                    AvoidingAttackAvailable = false;
                     tmrAvoidingAttackTime = new DispatcherTimer();
                     tmrAvoidingAttackTime.Tick += tmrAvoidingAttack_Tick;
                     tmrAvoidingAttackTime.Interval = TimeSpan.FromSeconds(1);
                     tmrAvoidingAttackTime.IsEnabled = true;
+                    Bdr.BorderBrush = new SolidColorBrush(Colors.LightBlue);
                 }
                 if (!avoidingAttack)
                 {
@@ -212,6 +215,7 @@ namespace libObjProperties
                     tmrAvoidAttackCD.Interval = TimeSpan.FromSeconds(1);
                     tmrAvoidAttackCD.Tick += tmrAvoidAttackCD_Tick;
                     tmrAvoidAttackCD.IsEnabled = true;
+                    Bdr.BorderBrush = new SolidColorBrush(Colors.Green);
                 }
             }
         }
@@ -251,7 +255,7 @@ namespace libObjProperties
             if (avoidingAttackCD <= 0)
             {
                 //CD完成，技能可使用
-                avoidingAttackAvailable = true;
+                AvoidingAttackAvailable = true;
                 tmrAvoidAttackCD.IsEnabled = false;
                 tmrAvoidAttackCD.Tick -= tmrAvoidAttackCD_Tick;
             }
