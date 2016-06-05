@@ -330,84 +330,78 @@ namespace DSpread
                 return;
 
             Border bdrObject = (Border)bdr.Child;
-
-            if (!(bool)bdr.Tag)
+            DSObject ds = (DSObject)bdrObject.Tag;
+            if (ds.Team == TeamSign.Teams.User)
             {
-                bdr.Tag = true;
-                bdr.BorderBrush = new SolidColorBrush(Colors.Blue);
-                bool isInList = false;
-                foreach (DSObject ds in GameData.arrSelectedUserObjects)
+                if (!(bool)bdr.Tag)
                 {
-                    if (ds.ObjectProperties.Bdr == bdrObject)
+                    bdr.Tag = true;
+                    bdr.BorderBrush = new SolidColorBrush(Colors.Blue);
+                    bool isInList = false;
+                    foreach (DSObject dsInList in GameData.arrSelectedUserObjects)
                     {
-                        isInList = true;
-                        break;
+                        if (dsInList.ObjectProperties.Bdr == bdrObject)
+                        {
+                            isInList = true;
+                            break;
+                        }
+                    }
+
+                    if (!isInList)
+                    {
+                        GameData.arrSelectedUserObjects.Add((DSObject)bdrObject.Tag);
                     }
                 }
-
-                if (!isInList)
+                else
                 {
-                    GameData.arrSelectedUserObjects.Add((DSObject)bdrObject.Tag);
+                    List<DSObject> arrNew = new List<DSObject>();
+                    foreach (DSObject dsNew in GameData.arrSelectedUserObjects)
+                    {
+                        if (dsNew.ObjectProperties.Bdr == bdrObject)
+                            continue;
+                        arrNew.Add(dsNew);
+                    }
+                    GameData.arrSelectedUserObjects = arrNew;
+
+                    bdr.Tag = false;
+                    bdr.BorderBrush = new SolidColorBrush(Colors.Black);
                 }
             }
             else
             {
-                List<DSObject> arrNew = new List<DSObject>();
-                foreach (DSObject ds in GameData.arrSelectedUserObjects)
+                if (!(bool)bdr.Tag)
                 {
-                    if (ds.ObjectProperties.Bdr == bdrObject)
-                        continue;
-                    arrNew.Add(ds);
-                }
-                GameData.arrSelectedUserObjects = arrNew;
-
-                bdr.Tag = false;
-                bdr.BorderBrush = new SolidColorBrush(Colors.Black);
-            }
-
-
-        }
-
-        private void Border_MouseDown_Enemy(object sender, MouseButtonEventArgs e)
-        {
-            Border bdr = (Border)sender;
-            if (bdr.Child == null)
-                return;
-
-            Border bdrObject = (Border)bdr.Child;
-
-            if (!(bool)bdr.Tag)
-            {
-                bdr.Tag = true;
-                bdr.BorderBrush = new SolidColorBrush(Colors.Red);
-                bool isInList = false;
-                foreach (DSObject ds in GameData.arrSelectedEnemiesObjects)
-                {
-                    if (ds.ObjectProperties.Bdr == bdrObject)
+                    bdr.Tag = true;
+                    bdr.BorderBrush = new SolidColorBrush(Colors.Red);
+                    bool isInList = false;
+                    foreach (DSObject dsInList in GameData.arrSelectedEnemiesObjects)
                     {
-                        isInList = true;
-                        break;
+                        if (dsInList.ObjectProperties.Bdr == bdrObject)
+                        {
+                            isInList = true;
+                            break;
+                        }
+                    }
+
+                    if (!isInList)
+                    {
+                        GameData.arrSelectedEnemiesObjects.Add((DSObject)bdrObject.Tag);
                     }
                 }
-
-                if (!isInList)
+                else
                 {
-                    GameData.arrSelectedEnemiesObjects.Add((DSObject)bdrObject.Tag);
-                }
-            }
-            else
-            {
-                List<DSObject> arrNew = new List<DSObject>();
-                foreach (DSObject ds in GameData.arrSelectedEnemiesObjects)
-                {
-                    if (ds.ObjectProperties.Bdr == bdrObject)
-                        continue;
-                    arrNew.Add(ds);
-                }
-                GameData.arrSelectedEnemiesObjects = arrNew;
+                    List<DSObject> arrNew = new List<DSObject>();
+                    foreach (DSObject dsNew in GameData.arrSelectedEnemiesObjects)
+                    {
+                        if (dsNew.ObjectProperties.Bdr == bdrObject)
+                            continue;
+                        arrNew.Add(dsNew);
+                    }
+                    GameData.arrSelectedEnemiesObjects = arrNew;
 
-                bdr.Tag = false;
-                bdr.BorderBrush = new SolidColorBrush(Colors.Black);
+                    bdr.Tag = false;
+                    bdr.BorderBrush = new SolidColorBrush(Colors.Black);
+                }
             }
         }
 
@@ -449,13 +443,19 @@ namespace DSpread
                 PH = ds.ObjectProperties.Ph + PH;
                 pbrPH.Value = 0;
 
+                bdrAttack.IsEnabled = true;
+                bdrAvoid.IsEnabled = true;
+                bdrExtraArmor.IsEnabled = true;
+                bdrViolatedAttack.IsEnabled = true;
+
                 if (!ds.ObjectProperties.AttacksAvailable)
                 {
                     CDATK = false;
+                    bdrAttack.IsEnabled = false;
+                    lblAttack.Content = "";
                     if (ds.ObjectProperties.AttacksCD > maxCDATK)
                     {
                         maxCDATK = ds.ObjectProperties.AttacksCD;
-                        bdrAttack.IsEnabled = false;
                         lblAttack.Content = maxCDATK;
                         lblAttack.FontSize = 20;
                         lblAttack.HorizontalAlignment = HorizontalAlignment.Center;
@@ -466,10 +466,11 @@ namespace DSpread
                 if (!ds.ObjectProperties.AvoidingAttackAvailable)
                 {
                     CDAvoid = false;
+                    bdrAvoid.IsEnabled = false;
+                    lblAvoid.Content = "";
                     if (ds.ObjectProperties.AvoidAttackCD > maxCDAvoid)
                     {
                         maxCDAvoid = ds.ObjectProperties.AvoidAttackCD;
-                        bdrAvoid.IsEnabled = false;
                         lblAvoid.Content = maxCDAvoid;
                         lblAvoid.FontSize = 20;
                         lblAvoid.HorizontalAlignment = HorizontalAlignment.Center;
@@ -480,10 +481,11 @@ namespace DSpread
                 if (!ds.ObjectProperties.ExtraArmorAvailable)
                 {
                     CDArmor = false;
+                    bdrExtraArmor.IsEnabled = false;
+                    lblArmorEX.Content = "";
                     if (ds.ObjectProperties.ExtraArmorCD > maxCDArmor)
                     {
                         maxCDArmor = ds.ObjectProperties.ExtraArmorCD;
-                        bdrExtraArmor.IsEnabled = false;
                         lblArmorEX.Content = maxCDArmor;
                         lblArmorEX.FontSize = 20;
                         lblArmorEX.HorizontalAlignment = HorizontalAlignment.Center;
@@ -494,10 +496,11 @@ namespace DSpread
                 if (!ds.ObjectProperties.ViolentAttacksAvailable)
                 {
                     CDCrit = false;
+                    bdrViolatedAttack.IsEnabled = false;
+                    lblArmorEX.Content = "";
                     if (ds.ObjectProperties.ViolentAttacksCD > maxCDCrit)
                     {
                         maxCDCrit = ds.ObjectProperties.ViolentAttacksCD;
-                        bdrViolatedAttack.IsEnabled = false;
                         lblCrit.Content = maxCDCrit;
                         lblCrit.FontSize = 20;
                         lblCrit.HorizontalAlignment = HorizontalAlignment.Center;
