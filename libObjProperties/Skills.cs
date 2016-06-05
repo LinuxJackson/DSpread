@@ -12,8 +12,8 @@ namespace libObjProperties
         public Skills()
         {
             AttacksAvailable = true;
-            ExtraArmor = false;
-            AvoidingAttack = false;
+            ExtraArmorAvailable = false;
+            AvoidingAttackAvailable = false;
             ViolentAttacksAvailable = false;
 
             Atk = DefaultParameters.StartingATK;

@@ -13,13 +13,21 @@
         <Label x:Name="lblNotice" FontSize="30" Content="欢迎来到对战" HorizontalAlignment="Center" Margin="0,150,0,0" VerticalAlignment="Top" Height="48" d:IsHidden="True"/>
         <Grid x:Name="gdControl" HorizontalAlignment="Left" Height="148" Margin="171,486,0,0" VerticalAlignment="Top" Width="450" Grid.RowSpan="2">
             <ProgressBar x:Name="pbrPH" Background="Pink" Foreground="Red" HorizontalAlignment="Center" Height="20" Margin="24,115,26,0" VerticalAlignment="Top" Width="400"/>
-            <Border x:Name="bdrAttack" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="55" Margin="24,48,0,0" VerticalAlignment="Top" Width="55"/>
-            <Border x:Name="bdrAvoid" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="55" Margin="84,48,0,0" VerticalAlignment="Top" Width="55"/>
-            <Border x:Name="bdrExtraArmor" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="55" Margin="144,48,0,0" VerticalAlignment="Top" Width="55"/>
-            <Border x:Name="bdrViolatedAttack" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="55" Margin="204,48,0,0" VerticalAlignment="Top" Width="55"/>
+            <Border x:Name="bdrAttack" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="55" Margin="24,48,0,0" VerticalAlignment="Top" Width="55">
+                <Label x:Name="lblAttack" Content="Attack" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0" FontSize="10"/>
+            </Border>
+            <Border x:Name="bdrAvoid" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="55" Margin="84,48,0,0" VerticalAlignment="Top" Width="55">
+                <Label x:Name="lblAvoid" Content="Avoid" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0" FontSize="10"/>
+            </Border>
+            <Border x:Name="bdrExtraArmor" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="55" Margin="144,48,0,0" VerticalAlignment="Top" Width="55">
+                <Label x:Name="lblArmorEX" Content="Armor" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0" FontSize="10"/>
+            </Border>
+            <Border x:Name="bdrViolatedAttack" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="55" Margin="204,48,0,0" VerticalAlignment="Top" Width="55">
+                <Label x:Name="lblCrit" Content="Crit" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0" FontSize="10"/>
+            </Border>
             <Label x:Name="lblATK" Content="ATK: " HorizontalAlignment="Left" Margin="287,48,0,0" VerticalAlignment="Top" Width="40"/>
             <Label x:Name="lblArmor" Content="Armor: " HorizontalAlignment="Left" Margin="287,78,0,0" VerticalAlignment="Top"/>
-            <Label Content="[PH/100]" HorizontalAlignment="Center" Margin="194,112,196,0" VerticalAlignment="Top"/>
+            <Label x:Name="lblPH" Content="[PH/100]" HorizontalAlignment="Center" Margin="0,112,0,0" VerticalAlignment="Top"/>
             <Label Content="取消选定（z）" Foreground="Gray" FontWeight="Bold" HorizontalAlignment="Left" Margin="356,10,0,0" VerticalAlignment="Top"/>
         </Grid>
         <Grid x:Name="gdUserObjects" HorizontalAlignment="Center" Height="210" Margin="50,259,51,0" VerticalAlignment="Top" Width="590">

@@ -51,12 +51,18 @@ namespace DSpread
             tmrStarting.Tick += tmrStarting_Tick;
             tmrStarting.IsEnabled = true;
 
+            tmrCDShower = new DispatcherTimer();
+            tmrCDShower.Interval = TimeSpan.FromSeconds(0.1);
+            tmrCDShower.Tick += TmrCDShower_Tick;
+            tmrCDShower.IsEnabled = true;
+
             foreach (UIElement ui in gdEnemyObjects.Children)
             {
                 Border bdr = ui as Border;
                 if (bdr != null)
                 {
                     bdr.Tag = false;
+                    bdr.BorderThickness = new Thickness(2);
                 }
             }
             foreach (UIElement ui in gdUserObjects.Children)
@@ -65,6 +71,7 @@ namespace DSpread
                 if (bdr != null)
                 {
                     bdr.Tag = false;
+                    bdr.BorderThickness = new Thickness(2);
                 }
             }
         }
@@ -327,7 +334,7 @@ namespace DSpread
 
                 if (!isInList)
                 {
-                    GameData.arrSelectedEnemiesObjects.Add((DSObject)bdrObject.Tag);
+                    GameData.arrSelectedUserObjects.Add((DSObject)bdrObject.Tag);
                 }
             }
             else
@@ -344,6 +351,8 @@ namespace DSpread
                 bdr.Tag = false;
                 bdr.BorderBrush = new SolidColorBrush(Colors.Black);
             }
+
+
         }
 
         private void Border_MouseDown_Enemy(object sender, MouseButtonEventArgs e)
@@ -359,7 +368,7 @@ namespace DSpread
                 bdr.Tag = true;
                 bdr.BorderBrush = new SolidColorBrush(Colors.Red);
                 bool isInList = false;
-                foreach (DSObject ds in GameData.arrEnemyObjects)
+                foreach (DSObject ds in GameData.arrSelectedEnemiesObjects)
                 {
                     if (ds.ObjectProperties.Bdr == bdrObject)
                     {
@@ -376,17 +385,149 @@ namespace DSpread
             else
             {
                 List<DSObject> arrNew = new List<DSObject>();
-                foreach (DSObject ds in GameData.arrEnemyObjects)
+                foreach (DSObject ds in GameData.arrSelectedEnemiesObjects)
                 {
                     if (ds.ObjectProperties.Bdr == bdrObject)
                         continue;
                     arrNew.Add(ds);
                 }
-                GameData.arrEnemyObjects = arrNew;
+                GameData.arrSelectedEnemiesObjects = arrNew;
 
                 bdr.Tag = false;
                 bdr.BorderBrush = new SolidColorBrush(Colors.Black);
             }
+        }
+
+        DispatcherTimer tmrCDShower;
+
+        private void TmrCDShower_Tick(object sender, EventArgs e)
+        {
+            if (GameData.arrSelectedUserObjects.Count == 0)
+                return;
+
+            int maxCDATK = 0;
+            int maxCDAvoid = 0;
+            int maxCDArmor = 0;
+            int maxCDCrit = 0;
+
+            bool CDATK = true, CDAvoid = true, CDArmor = true, CDCrit = true;
+
+            double averATK = 0;
+            double averArmor = 0;
+            double averActualArmor = 0;
+            double PH = 0;
+
+            foreach (DSObject ds in GameData.arrSelectedUserObjects)
+            {
+                averATK = ds.ObjectProperties.Atk + averATK;
+                averArmor = ds.ObjectProperties.Armor + averArmor;
+                averActualArmor = ds.ObjectProperties.ActualArmor + averActualArmor;
+                PH = ds.ObjectProperties.Ph + PH;
+
+                if (!ds.ObjectProperties.AttacksAvailable)
+                {
+                    CDATK = false;
+                    if (ds.ObjectProperties.AttacksCD > maxCDATK)
+                    {
+                        maxCDATK = ds.ObjectProperties.AttacksCD;
+                        bdrAttack.IsEnabled = false;
+                        lblATK.Content = ds.ObjectProperties.AttacksCD;
+                        lblATK.FontSize = 20;
+                        lblATK.HorizontalAlignment = HorizontalAlignment.Center;
+                        lblATK.VerticalAlignment = VerticalAlignment.Center;
+                        lblATK.Foreground = new SolidColorBrush(Colors.Pink);
+                    }
+                }
+                if (!ds.ObjectProperties.AvoidingAttackAvailable || ds.ObjectProperties.AvoidingAttack == true)
+                {
+                    CDAvoid = false;
+                    if (ds.ObjectProperties.AvoidAttackCD > maxCDAvoid)
+                    {
+                        maxCDAvoid = ds.ObjectProperties.AvoidAttackCD;
+                        bdrAvoid.IsEnabled = false;
+                        lblAvoid.Content = ds.ObjectProperties.AttacksCD;
+                        lblAvoid.FontSize = 20;
+                        lblAvoid.HorizontalAlignment = HorizontalAlignment.Center;
+                        lblAvoid.VerticalAlignment = VerticalAlignment.Center;
+                        lblAvoid.Foreground = new SolidColorBrush(Colors.Pink);
+                    }
+                }
+                if (!ds.ObjectProperties.ExtraArmorAvailable || ds.ObjectProperties.AvoidingAttack == true)
+                {
+                    CDArmor = false;
+                    if (ds.ObjectProperties.ExtraArmorCD > maxCDArmor)
+                    {
+                        maxCDArmor = ds.ObjectProperties.ExtraArmorCD;
+                        bdrExtraArmor.IsEnabled = false;
+                        lblArmorEX.Content = ds.ObjectProperties.AttacksCD;
+                        lblArmorEX.FontSize = 20;
+                        lblArmorEX.HorizontalAlignment = HorizontalAlignment.Center;
+                        lblArmorEX.VerticalAlignment = VerticalAlignment.Center;
+                        lblArmorEX.Foreground = new SolidColorBrush(Colors.Pink);
+                    }
+                }
+                if (!ds.ObjectProperties.ViolentAttacksAvailable)
+                {
+                    CDCrit = false;
+                    if (ds.ObjectProperties.ViolentAttacksCD > maxCDCrit)
+                    {
+                        maxCDCrit = ds.ObjectProperties.ViolentAttacksCD;
+                        bdrViolatedAttack.IsEnabled = false;
+                        lblCrit.Content = ds.ObjectProperties.AttacksCD;
+                        lblCrit.FontSize = 20;
+                        lblCrit.HorizontalAlignment = HorizontalAlignment.Center;
+                        lblCrit.VerticalAlignment = VerticalAlignment.Center;
+                        lblCrit.Foreground = new SolidColorBrush(Colors.Pink);
+                    }
+                }
+            }
+            if (CDATK)
+            {
+                bdrAttack.IsEnabled = true;
+                lblATK.Content = "Attack";
+                lblATK.FontSize = 10;
+                lblATK.HorizontalAlignment = HorizontalAlignment.Left;
+                lblATK.VerticalAlignment = VerticalAlignment.Top;
+                lblATK.Foreground = new SolidColorBrush(Colors.Black);
+            }
+            if (CDAvoid)
+            {
+                bdrAvoid.IsEnabled = true;
+                lblAvoid.Content = "Avoid";
+                lblAvoid.FontSize = 10;
+                lblAvoid.HorizontalAlignment = HorizontalAlignment.Left;
+                lblAvoid.VerticalAlignment = VerticalAlignment.Top;
+                lblAvoid.Foreground = new SolidColorBrush(Colors.Black);
+            }
+            if (CDArmor)
+            {
+                bdrExtraArmor.IsEnabled = true;
+                lblArmorEX.Content = "Armor";
+                lblArmorEX.FontSize = 10;
+                lblArmorEX.HorizontalAlignment = HorizontalAlignment.Left;
+                lblArmorEX.VerticalAlignment = VerticalAlignment.Top;
+                lblArmorEX.Foreground = new SolidColorBrush(Colors.Black);
+            }
+            if (CDCrit)
+            {
+                bdrViolatedAttack.IsEnabled = true;
+                lblCrit.Content = "Crit";
+                lblCrit.FontSize = 10;
+                lblCrit.HorizontalAlignment = HorizontalAlignment.Left;
+                lblCrit.VerticalAlignment = VerticalAlignment.Top;
+                lblCrit.Foreground = new SolidColorBrush(Colors.Black);
+            }
+
+            //averATK = averATK / GameData.arrSelectedUserObjects.Count;
+            //averArmor = averArmor / GameData.arrSelectedUserObjects.Count;
+            //averActualArmor = averActualArmor / GameData.arrSelectedUserObjects.Count;
+
+            this.lblATK.Content = "ATK: " + averATK;
+            this.lblArmor.Content = "Armor: " + averArmor + "/" + averActualArmor;
+            this.lblPH.Content = "[" + PH + "/" + DefaultParameters.PH * GameData.arrSelectedUserObjects.Count + "]";
+
+            pbrPH.Maximum = DefaultParameters.PH * GameData.arrSelectedUserObjects.Count;
+            pbrPH.Value = PH;
         }
     }
 }
