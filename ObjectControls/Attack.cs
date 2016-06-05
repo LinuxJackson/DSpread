@@ -11,13 +11,13 @@ namespace ObjectControls
 {
     static public class Attack
     {
-        static public void AttackTarget(DSObject[] arrAttacker, DSObject[] arrBeAttacked, TeamSign.Teams attacker, bool isviolated = false)
+        static public void AttackTarget(List<DSObject> arrAttacker, List<DSObject> arrBeAttacked, TeamSign.Teams attacker, bool isviolated = false)
         {
             double averageATK = 0;
 
             foreach (DSObject ds in arrAttacker)
                 averageATK = ds.ObjectProperties.Atk + averageATK;
-            averageATK = averageATK / arrAttacker.Length;
+            averageATK = averageATK / arrAttacker.Count;
 
             if(isviolated)
                 averageATK = averageATK * 3;
@@ -63,8 +63,8 @@ namespace ObjectControls
                     addArmor = addArmor + 0.5 * ds.ObjectProperties.Armor;
                 }
 
-                addATK = addATK / arrAttacker.Length;
-                addArmor = addArmor / arrAttacker.Length;
+                addATK = addATK / arrAttacker.Count;
+                addArmor = addArmor / arrAttacker.Count;
 
                 foreach(DSObject ds in arrAttacker)
                 {

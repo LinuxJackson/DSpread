@@ -16,13 +16,13 @@ namespace ObjectControls
 
             foreach (DSObject ds in supporter)
             {
-                Armor = Armor + ds.ObjectProperties.Armor * 0.1 + DefaultParameters.StartingArmor;
-                ds.ObjectProperties.Armor = ds.ObjectProperties.Armor * 0.8;
-                ATK = ATK + ds.ObjectProperties.Atk * 0.1 + DefaultParameters.StartingArmor;
-                ds.ObjectProperties.Atk = ds.ObjectProperties.Atk * 0.8;
+                Armor = Armor + ds.ObjectProperties.Armor * 0.2;
+                ds.ObjectProperties.Armor = ds.ObjectProperties.Armor * 0.75;
+                ATK = ATK + ds.ObjectProperties.Atk * 0.2;
+                ds.ObjectProperties.Atk = ds.ObjectProperties.Atk * 0.75;
             }
 
-            return new DSObject(ATK / supporter.Count, Armor / supporter.Count, team);
+            return new DSObject(ATK, Armor, team);
         }
     }
 }

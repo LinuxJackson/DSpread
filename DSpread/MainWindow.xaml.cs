@@ -132,11 +132,24 @@ namespace DSpread
         private void bdrObjectCount_MouseDown(object sender, MouseButtonEventArgs e)
         {
             AddObject(TeamSign.Teams.User);
-            lblObjectCount.Content = "x" + GameData.UserObjectCount;
+            if (GameData.UserObjectCount > 0)
+                lblObjectCount.Content = "x" + GameData.UserObjectCount;
+            else
+                lblObjectCount.Content = "Add";
+
         }
 
         private void AddObject(libFlags.TeamSign.Teams team)
         {
+            if (GameData.UserObjectCount <= 0)
+            {
+                if (GameData.arrSelectedUserObjects.Count <= 0)
+                {
+                    //提示未选中
+                    return;
+                }
+            }
+
             TeamSign.Teams theOtherTeam;
             if (team == TeamSign.Teams.User)
                 theOtherTeam = TeamSign.Teams.Enemy;
@@ -403,7 +416,14 @@ namespace DSpread
         private void TmrCDShower_Tick(object sender, EventArgs e)
         {
             if (GameData.arrSelectedUserObjects.Count == 0)
+            {
+                gdControl.IsEnabled = false;
+                lblATK.Content = "ATK: ";
+                lblArmor.Content = "Armor: ";
+                lblPH.Content = "[--/--]";
                 return;
+            }
+            gdControl.IsEnabled = true;
 
             int maxCDATK = 0;
             int maxCDAvoid = 0;
@@ -423,6 +443,7 @@ namespace DSpread
                 averArmor = ds.ObjectProperties.Armor + averArmor;
                 averActualArmor = ds.ObjectProperties.ActualArmor + averActualArmor;
                 PH = ds.ObjectProperties.Ph + PH;
+                pbrPH.Value = 0;
 
                 if (!ds.ObjectProperties.AttacksAvailable)
                 {
@@ -431,11 +452,11 @@ namespace DSpread
                     {
                         maxCDATK = ds.ObjectProperties.AttacksCD;
                         bdrAttack.IsEnabled = false;
-                        lblATK.Content = ds.ObjectProperties.AttacksCD;
-                        lblATK.FontSize = 20;
-                        lblATK.HorizontalAlignment = HorizontalAlignment.Center;
-                        lblATK.VerticalAlignment = VerticalAlignment.Center;
-                        lblATK.Foreground = new SolidColorBrush(Colors.Pink);
+                        lblAttack.Content = ds.ObjectProperties.AttacksCD;
+                        lblAttack.FontSize = 20;
+                        lblAttack.HorizontalAlignment = HorizontalAlignment.Center;
+                        lblAttack.VerticalAlignment = VerticalAlignment.Center;
+                        lblAttack.Foreground = new SolidColorBrush(Colors.Pink);
                     }
                 }
                 if (!ds.ObjectProperties.AvoidingAttackAvailable || ds.ObjectProperties.AvoidingAttack == true)
@@ -473,7 +494,7 @@ namespace DSpread
                     {
                         maxCDCrit = ds.ObjectProperties.ViolentAttacksCD;
                         bdrViolatedAttack.IsEnabled = false;
-                        lblCrit.Content = ds.ObjectProperties.AttacksCD;
+                        lblCrit.Content = ds.ObjectProperties.ViolentAttacksCD;
                         lblCrit.FontSize = 20;
                         lblCrit.HorizontalAlignment = HorizontalAlignment.Center;
                         lblCrit.VerticalAlignment = VerticalAlignment.Center;
@@ -484,11 +505,11 @@ namespace DSpread
             if (CDATK)
             {
                 bdrAttack.IsEnabled = true;
-                lblATK.Content = "Attack";
-                lblATK.FontSize = 10;
-                lblATK.HorizontalAlignment = HorizontalAlignment.Left;
-                lblATK.VerticalAlignment = VerticalAlignment.Top;
-                lblATK.Foreground = new SolidColorBrush(Colors.Black);
+                lblAttack.Content = "Attack";
+                lblAttack.FontSize = 10;
+                lblAttack.HorizontalAlignment = HorizontalAlignment.Left;
+                lblAttack.VerticalAlignment = VerticalAlignment.Top;
+                lblAttack.Foreground = new SolidColorBrush(Colors.Black);
             }
             if (CDAvoid)
             {
@@ -522,12 +543,53 @@ namespace DSpread
             //averArmor = averArmor / GameData.arrSelectedUserObjects.Count;
             //averActualArmor = averActualArmor / GameData.arrSelectedUserObjects.Count;
 
-            this.lblATK.Content = "ATK: " + averATK;
-            this.lblArmor.Content = "Armor: " + averArmor + "/" + averActualArmor;
-            this.lblPH.Content = "[" + PH + "/" + DefaultParameters.PH * GameData.arrSelectedUserObjects.Count + "]";
+            this.lblATK.Content = "ATK: " + (int)averATK;
+            this.lblArmor.Content = "Armor: " + (int)averArmor + "/" + (int)averActualArmor;
+            this.lblPH.Content = "[" + (int)PH + "/" + (int)(DefaultParameters.PH * GameData.arrSelectedUserObjects.Count) + "]";
 
             pbrPH.Maximum = DefaultParameters.PH * GameData.arrSelectedUserObjects.Count;
             pbrPH.Value = PH;
+        }
+
+        private void Label_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Label lbl = (Label)sender;
+            lbl.Foreground = new SolidColorBrush(Colors.Black);
+        }
+
+        private void Label_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Label lbl = (Label)sender;
+            lbl.Foreground = new SolidColorBrush(Colors.Gray);
+        }
+
+        private void lblCancelAllSelection_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            foreach(UIElement ui in gdUserObjects.Children)
+            {
+                Border bdr = ui as Border;
+                if (bdr != null)
+                    bdr.BorderBrush = new SolidColorBrush(Colors.Black);
+            }
+            foreach (UIElement ui in gdEnemyObjects.Children)
+            {
+                Border bdr = ui as Border;
+                if (bdr != null)
+                    bdr.BorderBrush = new SolidColorBrush(Colors.Black);
+            }
+
+            GameData.arrSelectedUserObjects.Clear();
+            GameData.arrSelectedEnemiesObjects.Clear();
+        }
+
+        private void bdrAttack_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (GameData.arrSelectedEnemiesObjects.Count == 0 || GameData.arrSelectedUserObjects.Count == 0)
+            {
+                //提示未选中
+                return;
+            }
+            Attack.AttackTarget(GameData.arrSelectedUserObjects, GameData.arrSelectedEnemiesObjects, TeamSign.Teams.User);
         }
     }
 }
