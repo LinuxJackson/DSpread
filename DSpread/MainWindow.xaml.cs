@@ -183,7 +183,6 @@ namespace DSpread
                 remainObjectCount = GameData.UserObjectCount;
             else
                 remainObjectCount = GameData.EnemyObjectCount;
-            isAdded = true;
 
 
             if (remainObjectCount != 0)
@@ -405,6 +404,52 @@ namespace DSpread
             }
         }
 
+        private void Label_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Label lbl = (Label)sender;
+            lbl.Foreground = new SolidColorBrush(Colors.Black);
+        }
+
+        private void Label_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Label lbl = (Label)sender;
+            lbl.Foreground = new SolidColorBrush(Colors.Gray);
+        }
+
+        private void lblCancelAllSelection_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            foreach(UIElement ui in gdUserObjects.Children)
+            {
+                Border bdr = ui as Border;
+                if (bdr != null)
+                    bdr.BorderBrush = new SolidColorBrush(Colors.Black);
+            }
+            foreach (UIElement ui in gdEnemyObjects.Children)
+            {
+                Border bdr = ui as Border;
+                if (bdr != null)
+                    bdr.BorderBrush = new SolidColorBrush(Colors.Black);
+            }
+
+            GameData.arrSelectedUserObjects.Clear();
+            GameData.arrSelectedEnemiesObjects.Clear();
+        }
+
+        private void bdrAttack_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (GameData.arrSelectedEnemiesObjects.Count == 0 || GameData.arrSelectedUserObjects.Count == 0)
+            {
+                //提示未选中
+                return;
+            }
+            Attack.AttackTarget(GameData.arrSelectedUserObjects, GameData.arrSelectedEnemiesObjects, TeamSign.Teams.User);
+        }
+
+        private void bdrAvoid_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            AvoidAttack.Avoid(GameData.arrSelectedUserObjects);
+        }
+        
         DispatcherTimer tmrCDShower;
 
         private void TmrCDShower_Tick(object sender, EventArgs e)
@@ -556,52 +601,38 @@ namespace DSpread
 
             pbrPH.Maximum = DefaultParameters.PH * GameData.arrSelectedUserObjects.Count;
             pbrPH.Value = PH;
-        }
 
-        private void Label_MouseEnter(object sender, MouseEventArgs e)
-        {
-            Label lbl = (Label)sender;
-            lbl.Foreground = new SolidColorBrush(Colors.Black);
-        }
-
-        private void Label_MouseLeave(object sender, MouseEventArgs e)
-        {
-            Label lbl = (Label)sender;
-            lbl.Foreground = new SolidColorBrush(Colors.Gray);
-        }
-
-        private void lblCancelAllSelection_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            foreach(UIElement ui in gdUserObjects.Children)
-            {
-                Border bdr = ui as Border;
-                if (bdr != null)
-                    bdr.BorderBrush = new SolidColorBrush(Colors.Black);
-            }
+            //检测死亡
             foreach (UIElement ui in gdEnemyObjects.Children)
             {
                 Border bdr = ui as Border;
-                if (bdr != null)
-                    bdr.BorderBrush = new SolidColorBrush(Colors.Black);
+                if (bdr == null)
+                    continue;
+                if (bdr.Child == null)
+                    continue;
+                Border bdrDS = (Border)bdr.Child;
+                DSObject ds = (DSObject)bdrDS.Tag;
+
+                if (!ds.ObjectProperties.IsAlive)
+                {
+                    bdr.Child = null;
+                }
             }
-
-            GameData.arrSelectedUserObjects.Clear();
-            GameData.arrSelectedEnemiesObjects.Clear();
-        }
-
-        private void bdrAttack_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (GameData.arrSelectedEnemiesObjects.Count == 0 || GameData.arrSelectedUserObjects.Count == 0)
+            foreach (UIElement ui in gdUserObjects.Children)
             {
-                //提示未选中
-                return;
-            }
-            Attack.AttackTarget(GameData.arrSelectedUserObjects, GameData.arrSelectedEnemiesObjects, TeamSign.Teams.User);
-        }
+                Border bdr = ui as Border;
+                if (bdr == null)
+                    continue;
+                if (bdr.Child == null)
+                    continue;
+                Border bdrDS = (Border)bdr.Child;
+                DSObject ds = (DSObject)bdrDS.Tag;
 
-        private void bdrAvoid_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            AvoidAttack.Avoid(GameData.arrSelectedUserObjects);
+                if (!ds.ObjectProperties.IsAlive)
+                {
+                    bdr.Child = null;
+                }
+            }
         }
     }
 }

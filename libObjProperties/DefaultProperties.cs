@@ -147,7 +147,14 @@ namespace libObjProperties
                 gdPH.Opacity = (DefaultParameters.PH - ph) / 100;
 
                 if (ph <= 0)
+                {
                     isAlive = false;
+                    Bdr.IsEnabled = false;
+
+                    Atk =0;
+                    Armor = 0;
+                    Ph = 0;
+                }
             }
         }
 

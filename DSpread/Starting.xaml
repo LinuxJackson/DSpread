@@ -3,6 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Starting" Height="300" Width="300" ResizeMode="NoResize">
     <Grid>
-        <Label Content="Start" FontWeight="Bold" Foreground="Gray" FontSize="18" MouseEnter="Label_MouseEnter" MouseLeave="Label_MouseLeave" MouseDown="Label_MouseDown" HorizontalAlignment="Center" Margin="0,180,0,0" VerticalAlignment="Top"/>
+        <Label Content="Start" FontWeight="Bold" Foreground="Gray" FontSize="18" MouseEnter="Label_MouseEnter" MouseLeave="Label_MouseLeave" MouseDown="Label_MouseDown" HorizontalAlignment="Center" Margin="0,197,0,0" VerticalAlignment="Top"/>
+        <Label Content="警告！" HorizontalAlignment="Center" Foreground="Red" FontSize="20" Margin="0,24,0,0" VerticalAlignment="Top"/>
+        <Label Content="1.这连内测版本都不能算" HorizontalAlignment="Left" Margin="26,78,0,0" VerticalAlignment="Top"/>
+        <Label Content="2.实验品，或许参数很不合理" HorizontalAlignment="Left" Margin="26,108,0,0" VerticalAlignment="Top"/>
+        <Label Content="3.没有美工参与，没有任何资源文件、动画" HorizontalAlignment="Left" Margin="26,138,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>
