@@ -454,6 +454,17 @@ namespace DSpread
 
         private void TmrCDShower_Tick(object sender, EventArgs e)
         {
+            //检测游戏是否结束
+            if (GameState.IsEnd)
+            {
+                //游戏结束的操作
+                gdControl.IsEnabled = false;
+                gdUserObjects.IsEnabled = false;
+                gdEnemyObjects.IsEnabled = false;
+                //结束动画
+
+            }
+
             if (GameData.arrSelectedUserObjects.Count == 0)
             {
                 gdControl.IsEnabled = false;

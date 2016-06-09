@@ -72,6 +72,18 @@ namespace ObjectControls
                     ds.ObjectProperties.Armor = ds.ObjectProperties.Armor + addArmor;
                 }
             }
+
+            //检测胜利
+            if (GameData.arrEnemyObjects.Count == 0)
+            {
+                GameState.IsEnd = true;
+                GameState.WinTeam = TeamSign.Teams.User;
+            }
+            if (GameData.arrUserObjects.Count == 0)
+            {
+                GameState.IsEnd = true;
+                GameState.WinTeam = TeamSign.Teams.Enemy;
+            }
         }
     }
 }
